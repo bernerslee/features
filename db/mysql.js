@@ -1,5 +1,6 @@
 var faker = require('faker');
-
+const knex = require('../knex/knex.js');
+var Stopwatch = require('statman-stopwatch');
 //set randomness seed
 faker.seed(123);
 
@@ -44,11 +45,60 @@ var houseList = () => {
 //using knex we can create multiple transactions
 
 //helper function - create transaction
-    //will make 100 queries
+    //will make 100 queries --> maxed to 1000
 
     //possible error--> when inserting them, will id 
     //conflict with other trxs queries if so, maybe pass in predefined id?
+function createTRXN (mockData) {
+    var chunkSize = 100;
+    return knex.transaction(function(tr) {
+        knex.batchInsert('features', mockData.features, chunkSize)
+            .transacting(tr)
+            .then(function(res){
+                // console.log(res);
+                return tr.commit()
+                .then(function() { 
+                    // console.log('done');
+                    return;
+                })
+                .catch(tr.rollback)
+            })
+    })
+    .then(function(result) { 
+    //    console.log('Transaction complete.');
+    })
+    .catch(function(err) { 
+        console.error(err);
+    });
+
+    // console.log('waiting?')
+};
+
+function insertData (mockData){
+    var chunkSize = 100;
+    knex.batchInsert('features', mockData.features, chunkSize)
+    .then(function(ids) { 
+        console.log('complete: ', ids)
+        return;
+     })
+    .catch(function(error) { 
+        console.error(error);
+    });
+
+    console.log('not waiting?');
+};
 
 //generate 10 million
     //for loop to itterate over 100,000
+var max = 100000;
+// var max = 10000;
+async function seedDatabase () {
+    var sw = new Stopwatch(true);
+    var mockData = houseList();
+    for(var i = 0; i < max; i++){
+        await createTRXN (mockData);
+    }
+    return await console.log(`finished: ${sw.read()/60000} mins`);
+};
 
+seedDatabase();
