@@ -43,67 +43,36 @@ var houseList = () => {
     return result;
 };
 
+module.exports = { houseList};
 
-//using knex we can create multiple transactions
-
-//helper function - create transaction
-    //will make 100 queries --> maxed to 1000
-
-    //possible error--> when inserting them, will id 
-    //conflict with other trxs queries if so, maybe pass in predefined id?
-function featuresTRXN (mockData) {
-    var chunkSize = 100;
-    return knex.transaction(function(tr) {
-        knex.batchInsert('features', mockData.features, chunkSize)
-            .transacting(tr)
-            .then(function(res){
-                // console.log(res);
-                return tr.commit()
-                .then(function() { 
-                    // console.log('done');
-                    return;
-                })
-                .catch(tr.rollback)
-            })
-    })
-    .then(function(result) { 
-    //    console.log('Transaction complete.');
-    })
-    .catch(function(err) { 
-        console.error(err);
-    });
-};
-
-function insertData (mockData){
-    var chunkSize = 100;
-    return knex.batchInsert('features', mockData.features, chunkSize)
-    .then(function(ids) { 
-        return;
-     })
-    .catch(function(error) { 
-        console.error(error);
-    });
-};
+// function insertData (mockData){
+//     var chunkSize = 100;
+//     return knex.batchInsert('features', mockData.features, chunkSize)
+//     .then(function(ids) { 
+//         return;
+//      })
+//     .catch(function(error) { 
+//         console.error(error);
+//     });
+// };
 
 //generate 10 million
-    //for loop to itterate over 100,000
-var max = 100000;
-// var max = 10000;
-async function seedDatabase () {
-    var sw = new Stopwatch(true);
-    var mockData = houseList();
-    for(var i = 0; i < max; i++){
-        await insertData (mockData);
-    }
-    await console.log(`finished: ${sw.read()/60000} mins`);
+// var max = 100000;
+// async function seedDatabase () {
+//     var sw = new Stopwatch(true);
+//     var mockData = houseList();
+//     for(var i = 0; i < max; i++){
+//         await insertData (mockData);
+//     }
+//     await console.log(`finished: ${sw.read()/60000} mins`);
 
-    var t0 = new Stopwatch(true);
-   await knex('features').where({house_id: 9999990}).select().then(data=>{
-       console.log(data);
-   });
-   var t1 = t0.read();
-   console.log("Execution time for using knex.selec\(\) to query 'houses' table in Postgres DB is  "+ (Number(t1)) + " milliseconds.");
-   return;
-};
+//     var t0 = new Stopwatch(true);
+//    await knex('features').where({house_id: 9999990}).select().then(data=>{
+//        console.log(data);
+//    });
+//    var t1 = t0.read();
+//    console.log("Execution time for using knex.selec\(\) to query 'houses' table in Postgres DB is  "+ (Number(t1)) + " milliseconds.");
+//    return;
+// };
 
-seedDatabase();
+// seedDatabase();

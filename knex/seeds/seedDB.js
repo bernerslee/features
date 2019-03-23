@@ -1,13 +1,41 @@
+var mockData = require('../../db/mysql');
+var Stopwatch = require('statman-stopwatch');
 
 exports.seed = function(knex, Promise) {
-  // Deletes ALL existing entries
-  return knex('table_name').del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('table_name').insert([
-        {id: 1, colName: 'rowValue1'},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
-      ]);
+  
+  async function seedDataBase(data, cb) {
+    var max = 100000;
+    var chunkSize = 100;
+    var sw = new Stopwatch(true);
+    for(var i = 0; i < max; i++){
+        await knex.batchInsert('features', data.features, chunkSize)
+        .then(function(ids) {
+         })
+        .catch(function(error) { 
+            return cb(error, null)
+        });
+    }
+    return cb(null, `finished: ${sw.read()/60000} mins`);
+  }
+
+  function seedPromise() {
+    return new Promise(function (resolve, reject) {
+      var data = mockData.houseList();
+        seedDataBase(data, function (err, result) {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(JSON.stringify(result));
+          }
+        });
     });
+}
+  
+  //before seeding database clear all tables
+  return Promise.all([
+    knex('features').del(),
+    seedPromise().then((res)=>{
+      console.log(res);
+    })
+  ]);
 };
