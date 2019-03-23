@@ -1,6 +1,7 @@
 var faker = require('faker');
 const knex = require('../knex/knex.js');
 var Stopwatch = require('statman-stopwatch');
+// const {performance} = require('perf_hooks');
 //set randomness seed
 faker.seed(123);
 
@@ -42,6 +43,7 @@ var houseList = () => {
     return result;
 };
 
+
 //using knex we can create multiple transactions
 
 //helper function - create transaction
@@ -49,7 +51,7 @@ var houseList = () => {
 
     //possible error--> when inserting them, will id 
     //conflict with other trxs queries if so, maybe pass in predefined id?
-function createTRXN (mockData) {
+function featuresTRXN (mockData) {
     var chunkSize = 100;
     return knex.transaction(function(tr) {
         knex.batchInsert('features', mockData.features, chunkSize)
@@ -70,22 +72,17 @@ function createTRXN (mockData) {
     .catch(function(err) { 
         console.error(err);
     });
-
-    // console.log('waiting?')
 };
 
 function insertData (mockData){
     var chunkSize = 100;
-    knex.batchInsert('features', mockData.features, chunkSize)
+    return knex.batchInsert('features', mockData.features, chunkSize)
     .then(function(ids) { 
-        console.log('complete: ', ids)
         return;
      })
     .catch(function(error) { 
         console.error(error);
     });
-
-    console.log('not waiting?');
 };
 
 //generate 10 million
@@ -96,9 +93,17 @@ async function seedDatabase () {
     var sw = new Stopwatch(true);
     var mockData = houseList();
     for(var i = 0; i < max; i++){
-        await createTRXN (mockData);
+        await insertData (mockData);
     }
-    return await console.log(`finished: ${sw.read()/60000} mins`);
+    await console.log(`finished: ${sw.read()/60000} mins`);
+
+    var t0 = new Stopwatch(true);
+   await knex('features').where({house_id: 9999990}).select().then(data=>{
+       console.log(data);
+   });
+   var t1 = t0.read();
+   console.log("Execution time for using knex.selec\(\) to query 'houses' table in Postgres DB is  "+ (Number(t1)) + " milliseconds.");
+   return;
 };
 
 seedDatabase();

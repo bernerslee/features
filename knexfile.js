@@ -5,10 +5,10 @@ module.exports = {
         client: 'mysql',
         connection: db,
         migrations: {
-            directory: __dirname+'knex/migrations'
+            directory: __dirname+'/knex/migrations'
         },
         seeds: {
-            directory: __dirname+'knex/seeds'
+            directory: __dirname+'/knex/seeds'
         }
     }
 };
