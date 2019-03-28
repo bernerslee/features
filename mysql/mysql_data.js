@@ -21,8 +21,6 @@ const createInterior = () =>{
     return {
         Bedrooms: faker.random.number({min:1, max:6}),
         Bathrooms: faker.random.number({min:1, max:5}),
-        Cooling: faker.random.arrayElement(['None', 'A/C', 'Central']),
-        Heating: faker.random.arrayElement(['Forced air', 'Fan', 'Speeder air']),
         Appliances: faker.random.arrayElement(['Dishwasher','Dryer', 'Garbage disposal', 'Refrigerator', 'Washer']),
         Kitchen: faker.random.arrayElement(['Counter', 'Pantry', 'Updated Kitchen', 'Eat In Kitchen']),
         Flooring: faker.random.number({min:100, max:2000}),

@@ -32,9 +32,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    var path = window.location.pathname.split('/');
+    // var path = window.location.pathname.split('/');
     
-    let id = path[1];
+    // let id = path[1];
+    var id = 2;
     axios(`http://localhost:3003/house/${id}`)
     .then(response => {
       let house = response.data[0];
@@ -57,8 +58,8 @@ class App extends React.Component {
           this.setState({
             beds: house.bedrooms,
             baths: house.bathrooms,
-            heating: house.interiorheating,
-            cooling: house.interiorcooling,
+            heating: this.state.factsHeating,
+            cooling: this.state.factsCooling,
             kitchen: house.kitchen,
             appliances: house.appliances,
             flooring: house.flooring +' sqft'

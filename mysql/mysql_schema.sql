@@ -21,8 +21,6 @@ CREATE TABLE interior_features (
  feature_id int NOT NULL AUTO_INCREMENT,
  bedrooms varchar(255),
  bathrooms varchar (255),
- interiorheating varchar (255),
- interiorcooling varchar (255),
  appliances varchar (255),
  kitchen varchar (255),
  flooring varchar (255),
