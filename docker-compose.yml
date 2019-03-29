@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  mysql-dev:
+    image: mysql:5.7.25
+    environment:
+      MYSQL_DATABASE: zillow
+
+    ports:
+      - "3306:3306"  
