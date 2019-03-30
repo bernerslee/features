@@ -1,4 +1,8 @@
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+
+mongoose.connect('mongodb://localhost/interior', {useNewUrlParser: true});
+
 
 var featureSchema = new mongoose.Schema({
     house_id: Number,
@@ -22,8 +26,12 @@ var interiorSchema = new mongoose.Schema({
     sqft: String
 });
 
-//create models
-var Features = mongoose.model('Features', featureSchema );
-var Interior = mongoose.model('Interior', interiorSchema );
+var close = () => {
+    mongoose.disconnect();
+}
 
-module.exports = {Features, Interior};
+//create models
+var features = mongoose.model('features', featureSchema );
+var interior = mongoose.model('interior', interiorSchema );
+
+module.exports = {features, interior, close};
