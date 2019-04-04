@@ -6,27 +6,28 @@ var db = require('./mongo_schema');
 faker.seed(123);
 var chunkSize = 10;
 
-//create features data - return obj
+/** Generate Data **/
 const createFeatures = () => {
     return {
-        Type: faker.random.arrayElement(['Single Family', 'Multifamily', 'Condo', 'Townhome']),
-        Year_Built: faker.random.number({min:1900, max:2006}),
-        Heating: faker.random.arrayElement(['Forced air', 'Fan', 'Speeder air']),
-        Cooling: faker.random.arrayElement(['None', 'A/C', 'Central']),
-        Parking: faker.random.arrayElement(['None', '1 Space', '2 Spaces', '3 Spaces']),
-        Lot: faker.random.number({min: 1000, max:100000}),
-        Days_on_zillow: faker.random.number({min: 1, max:100}),
+        type: faker.random.arrayElement(['Single Family', 'Multifamily', 'Condo', 'Townhome']),
+        year_built: faker.random.number({min:1900, max:2006}),
+        heating: faker.random.arrayElement(['Forced air', 'Fan', 'Speeder air']),
+        cooling: faker.random.arrayElement(['None', 'A/C', 'Central']),
+        parking: faker.random.arrayElement(['None', '1 Space', '2 Spaces', '3 Spaces']),
+        lot: faker.random.number({min: 1000, max:100000}),
+        days_on_zillow: faker.random.number({min: 1, max:100}),
+        price_per_sqft: ''
     };
 };
-//create interior data
+
 const createInterior = () =>{
     return {
-        Bedrooms: faker.random.number({min:1, max:6}),
-        Bathrooms: faker.random.number({min:1, max:5}),
-        Appliances: faker.random.arrayElement(['Dishwasher','Dryer', 'Garbage disposal', 'Refrigerator', 'Washer']),
-        Kitchen: faker.random.arrayElement(['Counter', 'Pantry', 'Updated Kitchen', 'Eat In Kitchen']),
-        Flooring: faker.random.number({min:100, max:2000}),
-        Sqft: faker.random.number({min:1000, max:6000})
+        bedrooms: faker.random.number({min:1, max:6}),
+        bathrooms: faker.random.number({min:1, max:5}),
+        appliances: faker.random.arrayElement(['Dishwasher','Dryer', 'Garbage disposal', 'Refrigerator', 'Washer']),
+        kitchen: faker.random.arrayElement(['Counter', 'Pantry', 'Updated Kitchen', 'Eat In Kitchen']),
+        flooring: faker.random.number({min:100, max:2000}),
+        sqft: faker.random.number({min:1000, max:6000})
     };
 };
 
@@ -44,42 +45,53 @@ const createMockData = () => {
 
 
 //create 100 records - return array of objects
-var houseList = (id, mockData) => {
+const houseList = (id, mockData) => {
     var currentId = id * chunkSize;
     var result = {
         features: [],
         interior: []
     };
     for(var i = 0; i < chunkSize; i++){
-        result.features.push(Object.assign( {'house_id': currentId+i}, {info: mockData.features[i]} ));
-        result.interior.push(Object.assign( {'house_id': currentId+i}, {info: mockData.interior[i]} ));
+        var featureDoc = Object.assign( {'house_id': currentId+i}, mockData.features[i]);
+        result.features.push(featureDoc);
     }
-    console.log('result: ',result); //<<<<<
     return result;
 };
 
-function insertData (mockData){
-    db.features.insertMany(mockData.features,{ordered: false});
+function insertData (mockData, cb){
+    return db.features.insertMany(mockData.features, { ordered: false } )
+    .then((res)=>{
+        // console.log('result: ',res.length);
+        return;
+    })
+    .catch((err)=>{
+        return cb(err, null);
+    })
 };
 
 // generate 10 million
 // var max = 100000;
 var max = 1;
 
-async function seedDatabase () {
+async function seedDatabase (cb) {
     var sw = new Stopwatch(true);
     var mockData = createMockData();
     for(var i = 0; i < max; i++){
-        await insertData (houseList(i,mockData));
+        await insertData (houseList(i, mockData), cb);
     }
-    await console.log(`finished: ${sw.read()/60000} mins`);
+    var finished = `finished in ${sw.read()/60000} mins`
+    // await console.log(finished);
 
-    var t0 = new Stopwatch(true);
-    await db.features.findOne({house_id: 3});
-   var t1 = t0.read();
-   console.log("Execution time to query 'Interior' table in Mongo is  "+ (Number(t1)) + " milliseconds.");
+//     var t0 = new Stopwatch(true);
+//     await db.features.find({house_id: 2})
+//     .then((items)=>{
+//         console.log('found:', items); //returns an array of a single object
+//     })
+//     .catch(err => console.error(`Failed to find document: ${err}`));
+//    var t1 = t0.read();
+//    console.log("Execution time to query 'Interior' table in Mongo is  "+ (Number(t1)) + " milliseconds.");
 
-   return;
+   return cb(null, finished);
 };
 
-seedDatabase();
+module.exports = {seedDatabase};
