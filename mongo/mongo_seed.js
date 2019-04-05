@@ -16,6 +16,7 @@ async function mongoSeed() {
             console.log(err);
         });
     await mongoDB.features.deleteMany({});
+    await mongoDB.interior.deleteMany({});
     await seedPromise().then((res)=>{
               console.log('final: ',res);
             });

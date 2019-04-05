@@ -4,8 +4,8 @@ var Stopwatch = require('statman-stopwatch');
 exports.seed = function(knex, Promise) {
   
   async function seedDataBase(data, cb) {
-    var max = 100000;
-    var chunkSize = 100;
+    var max = 10000;
+    var chunkSize = 1000;
     var sw = new Stopwatch(true);
     for(var i = 0; i < max; i++){
         //insert facts data

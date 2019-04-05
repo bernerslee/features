@@ -13,7 +13,7 @@ var featureSchema = new mongoose.Schema({
 });
 
 var interiorSchema = new mongoose.Schema({
-    feature_id: Number,
+    feature_id: {type: Number, unique: true},
     bedrooms: String,
     bathrooms: String,
     appliances: String,

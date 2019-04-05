@@ -4,9 +4,7 @@ var db = require('./mongo_schema');
 
 //set randomness seed
 faker.seed(123);
-var chunkSize = 10;
 
-/** Generate Data **/
 const createFeatures = () => {
     return {
         type: faker.random.arrayElement(['Single Family', 'Multifamily', 'Condo', 'Townhome']),
@@ -31,67 +29,87 @@ const createInterior = () =>{
     };
 };
 
+var chunkSize = 1000;
+
 const createMockData = () => {
     var result = {
         features: [],
         interior: []
     };
-    for(var i= 0; i < 100; i++){
+    for(var i= 0; i < chunkSize; i++){
         result.features.push(createFeatures());
         result.interior.push(createInterior());
     }
     return result;
 }
 
-
-//create 100 records - return array of objects
 const houseList = (id, mockData) => {
     var currentId = id * chunkSize;
-    var result = {
-        features: [],
-        interior: []
-    };
+    var result = { features: [], interior: [] };
     for(var i = 0; i < chunkSize; i++){
         var featureDoc = Object.assign( {'house_id': currentId+i}, mockData.features[i]);
         result.features.push(featureDoc);
+        var interiorDoc = Object.assign( {'feature_id': currentId+i}, mockData.interior[i]);
+        result.interior.push(interiorDoc);
     }
     return result;
 };
 
-function insertData (mockData, cb){
-    return db.features.insertMany(mockData.features, { ordered: false } )
-    .then((res)=>{
-        // console.log('result: ',res.length);
-        return;
-    })
-    .catch((err)=>{
-        return cb(err, null);
-    })
-};
+//module.exports = houselist;
+
+// function insertData (mockData, cb){
+//     return db.features.insertMany(mockData.features, { ordered: false } )
+//     .then((res)=>{
+//         return;
+//     })
+//     .catch((err)=>{
+//         return cb(err, null);
+//     })
+    
+//     // db.interior.insertMany(mockData.interior, { ordered: false } )
+//     // .then((res)=>{
+//     // })
+//     // .catch((err)=>{
+//     //     return cb(err, null);
+//     // })
+
+// };
 
 // generate 10 million
-// var max = 100000;
-var max = 1;
+var max = 10000;
 
 async function seedDatabase (cb) {
     var sw = new Stopwatch(true);
     var mockData = createMockData();
     for(var i = 0; i < max; i++){
-        await insertData (houseList(i, mockData), cb);
+        var idData = houseList(i, mockData);
+         db.features.insertMany(idData.features, { ordered: false } )
+        .then((res)=>{
+        })
+        .catch((err)=>{
+            return cb(err, null);
+        })
+        await db.interior.insertMany(idData.interior, { ordered: false } )
+        .then((res)=>{
+        })
+        .catch((err)=>{
+            return cb(err, null);
+        })
     }
-    var finished = `finished in ${sw.read()/60000} mins`
+    // var finished = `finished in ${sw.read()/60000} mins`;
     // await console.log(finished);
 
-//     var t0 = new Stopwatch(true);
-//     await db.features.find({house_id: 2})
-//     .then((items)=>{
-//         console.log('found:', items); //returns an array of a single object
-//     })
-//     .catch(err => console.error(`Failed to find document: ${err}`));
-//    var t1 = t0.read();
-//    console.log("Execution time to query 'Interior' table in Mongo is  "+ (Number(t1)) + " milliseconds.");
+    var t0 = new Stopwatch(true);
+    await db.interior.find({feature_id: 9999999})
+    .then((items)=>{
+        console.log('found:', items); //returns an array of a single object
+    })
+    .catch(err => console.error(`Failed to find document: ${err}`));
+   var t1 = t0.read();  
+   console.log("Execution time to query 'Interior' table in Mongo is  "+ (Number(t1)) + " milliseconds.");
 
-   return cb(null, finished);
+//    return cb(null, finished);
+   return cb(null, `finished in ${sw.read()/60000} mins`);
 };
 
 module.exports = {seedDatabase};

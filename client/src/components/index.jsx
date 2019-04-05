@@ -36,7 +36,7 @@ class App extends React.Component {
     
     // let id = path[1];
     var id = 2;
-    axios(`http://localhost:3003/house/${id}`)
+    axios(`http://localhost:3003/house/features/${id}`)
     .then(response => {
       let house = response.data[0];
         this.setState({
