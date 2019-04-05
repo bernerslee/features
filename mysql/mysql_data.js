@@ -41,36 +41,36 @@ var houseList = () => {
     return result;
 };
 
-// module.exports = { houseList};
+module.exports = { houseList};
 
-function insertData (mockData){
-    var chunkSize = 100;
-    return knex.batchInsert('features', mockData.features, chunkSize)
-    .then(function(ids) { 
-        return;
-     })
-    .catch(function(error) { 
-        console.error(error);
-    });
-};
+// function insertData (mockData){
+//     var chunkSize = 100;
+//     return knex.batchInsert('features', mockData.features, chunkSize)
+//     .then(function(ids) { 
+//         return;
+//      })
+//     .catch(function(error) { 
+//         console.error(error);
+//     });
+// };
 
 // generate 10 million
-var max = 100000;
-async function seedDatabase () {
-    var sw = new Stopwatch(true);
-    var mockData = houseList();
-    for(var i = 0; i < max; i++){
-        await insertData (mockData);
-    }
-    await console.log(`finished: ${sw.read()/60000} mins`);
+// var max = 100000;
+// async function seedDatabase () {
+//     var sw = new Stopwatch(true);
+//     var mockData = houseList();
+//     for(var i = 0; i < max; i++){
+//         await insertData (mockData);
+//     }
+//     await console.log(`finished: ${sw.read()/60000} mins`);
 
-    var t0 = new Stopwatch(true);
-   await knex('features').where({house_id: 9999990}).select().then(data=>{
-       console.log(data);
-   });
-   var t1 = t0.read();
-   console.log("Execution time for using knex.selec\(\) to query 'houses' table in  MYSQL DB is  "+ (Number(t1)) + " milliseconds.");
-   return;
-};
+//     var t0 = new Stopwatch(true);
+//    await knex('features').where({house_id: 9999990}).select().then(data=>{
+//        console.log(data);
+//    });
+//    var t1 = t0.read();
+//    console.log("Execution time for using knex.selec\(\) to query 'houses' table in  MYSQL DB is  "+ (Number(t1)) + " milliseconds.");
+//    return;
+// };
 
-seedDatabase();
+// seedDatabase();

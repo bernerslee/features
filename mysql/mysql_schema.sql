@@ -1,3 +1,4 @@
+/* run file mysql -u root < mysql_schema.sql */
 DROP DATABASE IF EXISTS zillow;
 
 CREATE DATABASE zillow;

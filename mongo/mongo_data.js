@@ -57,24 +57,6 @@ const houseList = (id, mockData) => {
 
 //module.exports = houselist;
 
-// function insertData (mockData, cb){
-//     return db.features.insertMany(mockData.features, { ordered: false } )
-//     .then((res)=>{
-//         return;
-//     })
-//     .catch((err)=>{
-//         return cb(err, null);
-//     })
-    
-//     // db.interior.insertMany(mockData.interior, { ordered: false } )
-//     // .then((res)=>{
-//     // })
-//     // .catch((err)=>{
-//     //     return cb(err, null);
-//     // })
-
-// };
-
 // generate 10 million
 var max = 10000;
 
