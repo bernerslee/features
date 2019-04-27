@@ -2,10 +2,10 @@ var mockData = require('../../mysql/mysql_data');
 var Stopwatch = require('statman-stopwatch');
 //seeds mysql database
 exports.seed = function(knex, Promise) {
+  var max = 100000;
+  var chunkSize = 100;
   
   async function seedDataBase(data, cb) {
-    var max = 10000;
-    var chunkSize = 1000;
     var sw = new Stopwatch(true);
     for(var i = 0; i < max; i++){
         //insert facts data
@@ -28,7 +28,7 @@ exports.seed = function(knex, Promise) {
 
   function seedPromise() {
     return new Promise(function (resolve, reject) {
-      var data = mockData.houseList();
+      var data = mockData.houseList(chunkSize);
         seedDataBase(data, function (err, result) {
           if (err) {
               reject(err);
@@ -41,8 +41,8 @@ exports.seed = function(knex, Promise) {
   
   //before seeding database clear all tables
   return Promise.all([
-    knex('features').del(),
-    knex('interior_features').del(),
+    knex('features').truncate(),
+    knex('interior_features').truncate(),
     seedPromise().then((res)=>{
       console.log(res);
     })
