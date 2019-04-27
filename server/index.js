@@ -59,7 +59,7 @@ app.post('/house/interior',(req, res)=>{
         res.status(200).send({recent:data[0]});
     })
     .catch((err) => {
-        res.status(400).send('Unable to insert into features due to incorrect params');
+        res.status(400).send('Unable to insert into interior due to incorrect params');
     });
 });
 

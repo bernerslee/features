@@ -16,7 +16,7 @@ describe('Test Features CRUD API', function() {
         parking: 'None',
         lot: '80735',
         days_on_zillow: '81',
-        "price_per_sqft":null}];
+        price_per_sqft: null}];
 
       request.get({
         url: 'http://localhost:3001/house/features/9999990'
@@ -43,7 +43,7 @@ describe('Test Features CRUD API', function() {
 
   describe('test for POST', function(done) {
     
-    it('should receive last/new houseId on successful insertion', (done) => {
+    it('should receive new houseId on successful insertion', (done) => {
       var newHouseEntry = {
         type: 'Single Family',
         year_built: '1990',
@@ -245,7 +245,7 @@ describe('Test Interior CRUD API', function() {
         house_id: null,
         sqft: '6000' };
 
-      var expected = 'Unable to insert into features due to incorrect params';
+      var expected = 'Unable to insert into interior due to incorrect params';
       request.post({
         url: 'http://localhost:3001/house/interior',
         form: newHouseEntry
