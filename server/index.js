@@ -4,7 +4,6 @@ var app = express();
 var cors = require('cors');    
 var port = 3001;
 
-
 app.use(express.static(__dirname + '/../client/dist', {maxAge: 5000})); //sets maxAge to 5sec
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
