@@ -1,16 +1,14 @@
+FROM node:8.0
 
-FROM node:8
-
-# Set the working directory to /app
-RUN mkdir /app
-
-ADD . /app
-
+RUN mkdir -p /app
 WORKDIR /app
+COPY . /app
 
 RUN npm install
+RUN npm install knex -g
 
-EXPOSE 3004
+EXPOSE 3003
 
-CMD ["node", "server/server.js"]
+CMD ["node", "server/index.js"]
+
 
