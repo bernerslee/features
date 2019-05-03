@@ -6,6 +6,7 @@ COPY . /app
 
 RUN npm install
 RUN npm install knex -g
+RUN npm run mysql-seed
 
 EXPOSE 3003
 

@@ -9,6 +9,8 @@ import InteriorFeatures from './interiorFeatures.jsx';
  
 library.add( faHome, faSnowflake, faCalendar, faThermometerHalf, faParking, faThLarge)
 
+let host = 'http://ec2-3-16-155-119.us-east-2.compute.amazonaws.com:3300';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +38,7 @@ class App extends React.Component {
     
     // let id = path[1];
     var id = 2;
-    axios(`http://localhost:3003/house/features/${id}`)
+    axios(`http://${host}/house/features/${id}`)
     .then(response => {
       let house = response.data[0];
         this.setState({
@@ -52,7 +54,7 @@ class App extends React.Component {
         console.log(error);
       });
 
-    axios(`http://localhost:3003/house/interior/${id}`)
+    axios(`http://${host}/house/interior/${id}`)
       .then(response => {
         let house = response.data[0];
           this.setState({
