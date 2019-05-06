@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "build": "webpack -d --watch",
+    "build": "webpack -d",
     "start": "node server/index.js",
     "mongo-seed": "node database/seedDatabase.js",
     "mysql-seed": "knex seed:run"
