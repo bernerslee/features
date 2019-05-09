@@ -1,0 +1,29 @@
+config:
+  target: 'http://localhost:3003'
+  phases:
+    - duration: 3
+      arrivalRate: 100
+scenarios:
+  - flow:
+    - post:
+        url: "/house/features"
+        json:
+          type: 'Single Family'
+          year_built: '1990'
+          heating: 'Fan'
+          cooling: 'Central'
+          parking: 'None'
+          lot: '100500'
+          days_on_zillow: '34'
+          price_per_sqft: 'null'
+
+    - post:
+        url: "/house/interior"
+        json:
+          bedrooms: '5'
+          bathrooms: '3'
+          appliances: 'Refrigerator'
+          kitchen: 'Eat In Kitchen'
+          flooring: '1234'
+          house_id: 'null'
+          sqft: '6000'

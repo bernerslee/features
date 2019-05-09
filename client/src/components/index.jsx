@@ -9,8 +9,8 @@ import InteriorFeatures from './interiorFeatures.jsx';
  
 library.add( faHome, faSnowflake, faCalendar, faThermometerHalf, faParking, faThLarge)
 
-let host = 'ec2-3-16-155-119.us-east-2.compute.amazonaws.com:3003';
-
+// let host = 'ec2-3-16-155-119.us-east-2.compute.amazonaws.com:3003';
+let host = 'localhost:3003'
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -35,7 +35,6 @@ class App extends React.Component {
 
   componentDidMount() {
     var path = window.location.pathname.split('/');
-    
     let id = path[1];
     
     axios(`http://${host}/house/features/${id}`)

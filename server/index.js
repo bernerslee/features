@@ -1,3 +1,5 @@
+require('newrelic');
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
@@ -5,10 +7,10 @@ var cors = require('cors');
 var port = 3003;
 
 app.use(express.static(__dirname + '/../client/dist', {maxAge: 5000})); //sets maxAge to 5sec
+app.use('/:id',express.static(__dirname + '/../client/dist', {maxAge: 5000}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-
 const knex = require('../knex/knex.js');
 
 app.get('/house/features/:id',(req, res) => {
