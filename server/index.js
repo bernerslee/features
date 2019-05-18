@@ -1,10 +1,9 @@
-require('newrelic');
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var cors = require('cors');    
 var port = 3003;
+
 
 app.use(express.static(__dirname + '/../client/dist', {maxAge: 5000})); //sets maxAge to 5sec
 app.use('/:id',express.static(__dirname + '/../client/dist', {maxAge: 5000}));
@@ -12,9 +11,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 const knex = require('../knex/knex.js');
+const redisClient = require('./redis.js');
 
-app.get('/house/features/:id',(req, res) => {
+app.get('/house/features/:id',async (req, res) => {
     var id = Number(req.params.id);
+    const data = await redisClient.getAsync(req.params.id);
+    console.log('D: ',data);
+
+  
+  
     knex('features').where({house_id: id}).select()
     .then((data) => {
         if(data.length === 0){

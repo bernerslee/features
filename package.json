@@ -33,6 +33,7 @@
     "react-bootstrap": "^1.0.0-beta.5",
     "react-dom": "^16.7.0",
     "read-more-react": "^1.0.7",
+    "redis": "^2.8.0",
     "request": "^2.88.0",
     "statman-stopwatch": "^2.7.0",
     "styled-components": "^4.1.3"
