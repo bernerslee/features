@@ -14,38 +14,53 @@ const knex = require('../knex/knex.js');
 const redisClient = require('./redis.js');
 
 app.get('/house/features/:id',async (req, res) => {
-    var id = Number(req.params.id);
-    const data = await redisClient.getAsync(req.params.id);
-    console.log('D: ',data);
-
-  
-  
-    knex('features').where({house_id: id}).select()
-    .then((data) => {
-        if(data.length === 0){
-            res.status(400).send(`House ${id} does not exist`);
-        } else {
-            res.status(200).send(data);
-        }
-    })
-    .catch((err) => {
-        res.status(400).send(`Sent bad request for house ${id}`);
-    });
+    var id = req.params.id;;
+    var idF = id+'_F';
+    const cacheData = await redisClient.getAsync(idF);
+    if(cacheData !== null){
+        res.status(200).send(cacheData);
+    } else if((cacheData === null) && !isNaN(id)){
+        id = Number(id);
+        knex('features').where({house_id: id}).select()
+        .then(async (data) => {
+            if(data.length === 0){
+                res.status(400).send(`House ${id} does not exist`);
+            } else {
+                await redisClient.setAsync(idF, JSON.stringify(data));
+                res.status(200).send(data);
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(`Sent bad request for house ${id}`);
+        });
+    } else {
+        res.status(400).send(`Sent invalid parameter: ${id}`);
+    }
 });
 
-app.get('/house/interior/:id', (req, res)=>{
-    var id = Number(req.params.id);
-    knex('interior_features').where({feature_id: id}).select()
-    .then((data) => {
-        if(data.length === 0){
-            res.status(400).send(`House ${id} does not exist`);
-        } else {
-            res.status(200).send(data);
-        }
-    })
-    .catch((err) => {
-        res.status(400).send(`Sent bad request for house ${id}`);
-    });
+app.get('/house/interior/:id', async (req, res)=>{
+    var id = req.params.id;;
+    var idI = id+'_I';
+    const cacheData = await redisClient.getAsync(idI);
+    if(cacheData !== null){
+        res.status(200).send(cacheData);
+    } else if((cacheData === null) && !isNaN(id)){
+        id = Number(id);
+        knex('interior_features').where({feature_id: id}).select()
+        .then(async (data) => {
+            if(data.length === 0){
+                res.status(400).send(`House ${id} does not exist`);
+            } else {
+                await redisClient.setAsync(idI, JSON.stringify(data));
+                res.status(200).send(data);
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(`Sent bad request for house ${id}`);
+        });
+    } else {
+        res.status(400).send(`Sent invalid parameter: ${id}`);
+    }
 });
 
 app.post('/house/features',(req, res)=>{
